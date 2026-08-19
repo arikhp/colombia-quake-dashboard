@@ -1,11 +1,15 @@
 # Mw 7.4 Colombia earthquake — Cali situation dashboard
 
-A React dashboard covering the **10 August 2026 Mw 7.4 earthquake** near San José del
-Palmar, Chocó, Colombia, with the focus on the impact in **Cali and Valle del Cauca**.
+**Live:** [arikhp.github.io/colombia-quake-dashboard](https://arikhp.github.io/colombia-quake-dashboard/)
 
-The build produces **one self-contained `dist/index.html`** (about 390 kB). React, the
+A React dashboard covering the **10 August 2026 Mw 7.4 earthquake** near San José del
+Palmar, Chocó, Colombia, with the focus on the impact in **Cali and Pereira**.
+
+The build produces **one self-contained `dist/index.html`** (about 400 kB). React, the
 app code, the styles, the geography and roughly 100 kB of USGS scientific data are all
-inlined, so it opens by double-clicking the file — no server, no CDN, no network.
+inlined, so it opens by double-clicking the file — no server, no CDN, no network. The
+same file is what's deployed to GitHub Pages (via the `gh-pages` branch), so the live
+site works identically offline once loaded.
 
 ```
 open dist/index.html
@@ -17,12 +21,13 @@ open dist/index.html
 |---|-----|----------|
 | 1 | Overview | Headline figures, event parameters, PAGER and ground-failure alerts, population exposed by intensity, how the death toll evolved |
 | 2 | Map & shaking | Interactive map: 33 department boundaries, ShakeMap intensity contours, 118 populated places sized by population and coloured by modelled intensity, aftershocks, true-distance rings. Pan, zoom, layer toggles, view presets |
-| 3 | Cali | Distance and intensity, collapse-affected barrios, named damaged sites, the hospital system's response, reconstruction estimate |
-| 4 | National impact | Deaths and injuries by department and city, damaged infrastructure, secondary hazards |
-| 5 | Seismology | Focal mechanism computed from the moment tensor, nodal planes, finite-fault rupture model, depth cross-section, catalogued events with optional live refresh |
-| 6 | Loss modelling | PAGER fatality and economic probability distributions against what actually happened, cost estimates from five sources, building-type vulnerability, historical comparison |
-| 7 | Response & aid | Chronology, financial pledges, search-and-rescue teams and the aid controversy |
-| 8 | Sources & method | Every source, the known conflicts in the reporting, and how they are handled |
+| 3 | Cali | Official report #016 figures, collapse-affected barrios, named damaged sites, the hospital system's response, reconstruction estimate |
+| 4 | Pereira | The second-deadliest city: airport collapse, cable-car incident, health-system advisory, and how its death toll was first reported vs. settled |
+| 5 | National impact | Deaths and injuries by department and city, damaged infrastructure, secondary hazards |
+| 6 | Seismology | Focal mechanism computed from the moment tensor, nodal planes, finite-fault rupture model, depth cross-section, catalogued events with optional live refresh |
+| 7 | Loss modelling | PAGER fatality and economic probability distributions against what actually happened, cost estimates from five sources, building-type vulnerability, historical comparison |
+| 8 | Response & aid | Chronology, financial pledges, search-and-rescue teams and the aid controversy |
+| 9 | Sources & method | Every source, the known conflicts in the reporting, and how they are handled |
 
 Each tab is addressable: `dist/index.html#seismology`.
 
@@ -76,6 +81,23 @@ npm test          # build + check + verify
 
 `npm run verify` needs a Chromium-based browser; it looks in the usual locations or
 uses `CHROME_PATH`.
+
+## Deployment
+
+The site is static and single-file, so deployment is just publishing `dist/index.html`.
+It's served from GitHub Pages off the `gh-pages` branch (root path), which holds only
+that built file plus `.nojekyll`. To redeploy after a change:
+
+```bash
+npm run build
+git worktree add -b gh-pages-tmp ../pages-tmp origin/gh-pages
+cp dist/index.html ../pages-tmp/index.html
+cd ../pages-tmp && git add -A && git commit -m "Deploy" && git push origin HEAD:gh-pages
+cd - && git worktree remove ../pages-tmp --force
+```
+
+`main` holds the source and raw data only; `dist/` is git-ignored there so build
+artifacts never drift from what `npm run build` actually produces.
 
 ## Notable implementation details
 
